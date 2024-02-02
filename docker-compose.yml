@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  simple_bank:
+    container_name: simple_bank
+    build: ./
+    ports:
+      - 8888:8888
+    volumes:
+      - ./:/simple_bank
+    tty: true
+    depends_on:
+      - db
+  
+  db:
+    container_name: db
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=simple_bank
+    volumes:
+      - postgres_volumes:/var/lib/postgresql
+
+volumes:
+  postgres_volumes:
