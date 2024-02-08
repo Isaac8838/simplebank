@@ -40,7 +40,7 @@ jobs:
       run: go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
     - name: Run migrate
-      run: make migrateup
+      run: migrate -path db/migration -database "postgresql://root:password@localhost:5432/simple_bank?sslmode=disable" -verbose up
 
     - name: Test
       run: make test
