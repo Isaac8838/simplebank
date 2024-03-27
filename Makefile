@@ -4,7 +4,7 @@ network:
 	docker network create bank-network
 
 postgresql:
-	docker run --name postgres --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=password -d postgres:14-alpine
+	docker run --name postgres --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=password -d postgres:16-alpine
 
 migrateup:
 	migrate -path db/migration -database "$(DB_URL)" -verbose up

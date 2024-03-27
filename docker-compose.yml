@@ -1,28 +1,24 @@
 version: '3.9'
 
 services:
-  simple_bank:
-    container_name: simple_bank
-    build: ./
-    ports:
-      - 8888:8888
-    volumes:
-      - ./:/simple_bank
-    tty: true
-    depends_on:
-      - db
-  
-  db:
-    container_name: db
-    image: postgres
-    ports:
-      - 5432:5432
+  postgres:
+    image: postgres:16-alpine
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=simple_bank
-    volumes:
-      - postgres_volumes:/var/lib/postgresql
-
-volumes:
-  postgres_volumes:
+    ports:
+      - "5432:5432"
+  
+  api:
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_SOURCE=postgresql://root:password@postgres:5432/simple_bank?sslmode=disable
+    depends_on:
+      - postgres
+    entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh" ]
+    command: [ "/app/main" ]
